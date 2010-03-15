@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>NPBC</title>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="underscore.js"></script>
+    <script type="text/javascript" src="coffee-script.js"></script>
+    <style>
+      .header { text-align: center; background-color: gray; color white; width: 100%; height 200px; padding: 10px 10px 10px 10px }
+      body { background-color: black; color: white; }
+      .atckdefheader { text-align:center;}
+    </style>
+  </head>
+  <body>
+    <script type="text/coffeescript">
+      $ ->
+        beginning: _.template '<li>Beginning battle...</li>'
+        def_bonus: _.template '<li>Defender gets a +1 bonus to their Weapon Tech level of <%= def_ws %> for a total of <%= def_ws + 1 %>.</li>' 
+        exchange: _.template '<li><%= sender_name %> does <%= dmg %> points of damage to <%= receiver_name %>\'s fleet (<%= receiver_size_before %>), leaving <%= receiver_size %> ship(s) remaining!</li>'
+        ending: _.template '<li>The battle is over! <b><%= name %></b> has won with <%= size %> ship(s) remaining in their fleet!</li>'
+        $('#calculate').click ->
+          bl: $('#battle_log')
+          atk_size: parseInt($('#attacker_size').val())
+          atk_ws: parseInt($('#attacker_ws').val())
+          def_size: parseInt($('#defender_size').val())
+          def_ws: parseInt($('#defender_ws').val())
+          [defender, attacker]: ['Defender', 'Attacker']
+
+          bl.empty()
+          bl.append(def_bonus({def_ws:def_ws}))
+          def_ws: def_ws + 1
+          bl.append(beginning({}))
+
+          do_exchange: (sender_name, receiver_name, dmg, receiver_size, sender_size) ->
+            receiver_size_before: receiver_size
+            receiver_size: receiver_size_before - dmg
+            msg: ''
+            isDoneYet: false
+            if receiver_size < 1
+              receiver_size: 0
+              isDoneYet: true
+              msg: exchange {sender_name: sender_name, receiver_name: receiver_name, dmg: dmg, receiver_size_before: receiver_size_before, receiver_size: receiver_size }
+              endmsg: ending {name: sender_name, size: sender_size, doneYet: isDoneYet}
+              msg: msg + endmsg
+            else
+              msg: exchange {sender_name: sender_name, receiver_name: receiver_name, dmg: dmg, receiver_size_before: receiver_size_before, receiver_size: receiver_size }
+            { msg: msg, receiver_size: receiver_size, doneYet: isDoneYet }
+          doneYet: false
+          defTurn: true
+          while not doneYet
+            result: if defTurn then do_exchange(defender, attacker, def_ws, atk_size, def_size) else do_exchange(attacker, defender, atk_ws, def_size, atk_size)
+            [atk_size, def_size]: if defTurn [result.receiver_size, def_size] else [atk_size, result.receiver_size]
+            {doneYet: doneYet, msg: msg} : result
+            bl.append msg
+            defTurn: not defTurn
+    </script>
+    <h1 class="header">Neptune's Pride Battle Calculator</h1>
+    <table style="width:100%">
+      <tr>
+      <td>
+      <div id="attacker" style="border:1px solid red;padding:5px;">
+        <h6 class="atckdefheader">Attacker</h6>
+        <div>
+          <span>Weapon Tech Level</span>
+          <select id="attacker_ws">
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+            <option value="21">21</option>
+            <option value="22">22</option>
+            <option value="23">23</option>
+            <option value="24">24</option>
+            <option value="25">25</option>
+            <option value="26">26</option>
+            <option value="27">27</option>
+            <option value="28">28</option>
+            <option value="29">29</option>
+            <option value="30">30</option>
+          </select>
+        </div>
+        <div>
+          <span>Fleet Size:</span>
+          <input size="3" type="text" id="attacker_size" value="1" />
+        </div>
+      </div>
+      </td>
+      <td>
+      <div id="defender" style="float:right;border:1px solid blue;padding:5px;">
+        <h6 class="atckdefheader">Defender</h6>
+        <div>
+          <span>Weapon Tech Level</span>
+          <select id="defender_ws">
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+            <option value="21">21</option>
+            <option value="22">22</option>
+            <option value="23">23</option>
+            <option value="24">24</option>
+            <option value="25">25</option>
+            <option value="26">26</option>
+            <option value="27">27</option>
+            <option value="28">28</option>
+            <option value="29">29</option>
+            <option value="30">30</option>
+          </select>
+          <span>+1</span>
+        </div>
+        <div>
+          <span>Fleet Size:</span>
+          <input size="3" type="text" id="defender_size" value="1" />
+        </div>
+      </div>
+      </td>
+      </tr>
+      <tr>
+      <td>
+        <input type="button" id="calculate" value="Calculate" />
+      </td>
+      </tr>
+    </table>
+    <ul id="battle_log">
+    </ul>
+    <div class="header">This tool was created for the benefit and/or amusement of Neptune's Pride players. It is released unto the Public Domain and is kept under source control at <a href="http://github.com/olsonjeffery/npbc">http://github.com/olsonjeffery/npbc</a>. THIS PRODUCT PROVIDES NO WARRANTY EXPRESS OR IMPLIED. USE AT YOUR OWN PERIL.</div>
+  </body>
+</html>
