@@ -48,8 +48,12 @@
           doneYet: false
           defTurn: true
           while not doneYet
-            result: if defTurn then do_exchange(defender, attacker, def_ws, atk_size, def_size) else do_exchange(attacker, defender, atk_ws, def_size, atk_size)
-            [atk_size, def_size]: if defTurn [result.receiver_size, def_size] else [atk_size, result.receiver_size]
+            if defTurn 
+              result: do_exchange(defender, attacker, def_ws, atk_size, def_size) 
+              {receiver_size: atk_size} : result
+            else 
+              result: do_exchange(attacker, defender, atk_ws, def_size, atk_size)
+              {receiver_size: def_size} : result
             {doneYet: doneYet, msg: msg} : result
             bl.append msg
             defTurn: not defTurn
