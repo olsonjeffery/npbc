@@ -41,7 +41,7 @@
               isDoneYet: true
               msg: exchange {sender_name: sender_name, receiver_name: receiver_name, dmg: dmg, receiver_size_before: receiver_size_before, receiver_size: receiver_size }
               endmsg: ending {name: sender_name, size: sender_size, doneYet: isDoneYet}
-              msg: msg + endmsg
+              msg: endmsg + msg
             else
               msg: exchange {sender_name: sender_name, receiver_name: receiver_name, dmg: dmg, receiver_size_before: receiver_size_before, receiver_size: receiver_size }
             { msg: msg, receiver_size: receiver_size, doneYet: isDoneYet }
@@ -55,8 +55,9 @@
               result: do_exchange(attacker, defender, atk_ws, def_size, atk_size)
               {receiver_size: def_size} : result
             {doneYet: doneYet, msg: msg} : result
-            bl.append msg
+            bl.prepend msg
             defTurn: not defTurn
+          $('body').scrollTop()
     </script>
     <h1 class="header">Neptune's Pride Battle Calculator</h1>
     <table style="width:100%">
